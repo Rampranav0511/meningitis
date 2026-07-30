@@ -23,7 +23,7 @@ for url in urls:# accessing one particular month every loop
 #for ele in l:
 
     #pgobject=chess.game.read_game(ele) # this function takes in only a file as an input , so we need to write all pgn's into a file
-with open("pgn_games","w") as f:
+with open("mygames.pgn","w") as f:
     for ele in l:
         f.write(ele+"/n/n") # blank line after each game
 # f.close() , we used with open here so it does it automatically
