@@ -1,5 +1,10 @@
+from datasets import load_dataset
 import chess
-import chess.engine
+import math
+data=load_dataset("Lichess/chess-evaluations",split="train")
+label=[]
+
+
 import numpy as np
 
  
@@ -32,24 +37,19 @@ def encode_board(board):
 
     return planes
 
-
-x=[]
-y=[]
-with open("pgn_games","r") as f:
-    while True:
-        game=chess.pgn.read_game(f) # here we are creating a game object
-        if game is None:
-            break
-        br=game.board() # this function also returns an chess.board object
-        for move in game.mainline_moves: # game.mainline_moves gives an iterable class , but here game.mainline
-
-            br.push(move) # this just moved a piece
-            info=engine.analyse(br,chess.engine.Limit(depth=11))
-            score=info["score"].white().score(mate_score=10000)
-
-            x.append(encode_board(br)) """ so basically br is a chess.Board object which basically when printed, python
-            automatically converts and prints it as a string. it shows the board position"""
-                     
-        """but neural network only takes in numbers or vectors/arrays , so we need to 
-        encode this board into a 3d numerical array"""
-            y.append(score)
+def cp_win(cp):
+    return 0.5 + 0.5*(2/(1 + math.exp(-0.00368208*cp))-1)
+for each in data:
+    fen=each["fen"]
+    pv = each["evals"][-1]["pvs"][0]
+    if "cp" in pv:
+        cp = pv["cp"]
+        y = cp_win(cp)
+    elif "mate" in pv:
+        mate = pv["mate"]
+        y = 1.0 if mate > 0 else 0.0   
+    else:
+        continue
+    board=chess.Board(fen)
+    x=encode_board(board).flatten()
+    label.append((x,y))
