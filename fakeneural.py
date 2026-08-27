@@ -1,5 +1,6 @@
 import math
 import numpy as n
+from sockfish import tr,label,valdata,data
 input_no=int(input("enter input layer neuron number"))
 output_no=int(input("enter first hidden layer neuron number"))
 # pass x , because its the input to each game board neurons
@@ -24,16 +25,14 @@ for i in range(3): # this indicates four( 3 hidden layers and a input layer) lay
 def forward_pass(inp,weig,bia):
     act=weig@inp + bia
     actf=1/(1+n.exp(-act))
-    layer_acts.append(actf)
-    weight_list.append(weig)
-    bias_list.append(bia)
+    
     return actf
 
 
 
 
 
-
+dimensions=[input_no] + outputsizes
 """
 first_act=forward_pass(input_layer,first_weights,first_bias)
 # act is now the final output in the last layer , the last layer here has only one neuron btw
@@ -41,8 +40,8 @@ first_out=forward_pass(first_act,weights,bias) """
 for i in range(0,len(outputsizes)-1):
     
     
-    weights=n.random.randn(outputsizes[i+1],outputsizes[i])# each thing is the weights matrix per layer
-    bias=n.random.randn(outputsizes[i+1],1) # bias aswelll
+    weights=n.random.randn(dimensions[i+1],dimensions[i])# each thing is the weights matrix per layer
+    bias=n.random.randn(dimensions[i+1],1) # bias aswelll
     weight_list.append(weights)
     bias_list.append(bias)
     
@@ -54,17 +53,18 @@ for e in range(total_epochs):
 
 
 
-    for pos,evaltarget in data:
+    for pos,evaltarget in tr: #tr is basically the array of tuples ( each tuple is each position , eval)
+        
 
         layer_acts=[]
-        layer_acts.append(pos)
+        layer_acts=[pos]
 
 
         # this is the forward pass layer
         act=pos
         for h in range(len(weight_list)):
             act=forward_pass(act,weight_list[h],bias_list[h])
-        
+            layer_acts.append(act)
 
 
         activation=layer_acts[-1]
@@ -75,17 +75,17 @@ for e in range(total_epochs):
             present_act=layer_acts[j+1]
             prev_act=layer_acts[j]
 
-
+            wog=weight_list[j]
             nudge=de@prev_act.T
             biasnudge=de
 
-            weight_list[j]-=step*nudge
+            weight_list[j]=wog-step*nudge
             bias_list[j]-=step*biasnudge
             """we give the if condition later because for the first iteration
             the output error is basically final activation - target , later on it gets
             multiplied with the derivative of activation function of previous layers"""
             if j!=0:
-                de=(weight_list[j].T@de)*(present_act*(1-present_act))
+                de=(wog.T@de)*(present_act*(1-present_act))
     # validation layer (forward pass of new examples but on updated weights in every epoch)
                 
     valloss=0

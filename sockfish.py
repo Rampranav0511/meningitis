@@ -1,7 +1,11 @@
 from datasets import load_dataset
 import chess
+
+
 import math
 data=load_dataset("Lichess/chess-evaluations",split="train")
+
+subset=data.select(range(200)) #gets one small slice
 label=[]
 
 
@@ -39,7 +43,7 @@ def encode_board(board):
 
 def cp_win(cp):
     return 0.5 + 0.5*(2/(1 + math.exp(-0.00368208*cp))-1)
-for each in data:
+for each in subset:
     fen=each["fen"]
     pv = each["evals"][-1]["pvs"][0]
     if "cp" in pv:
@@ -53,3 +57,16 @@ for each in data:
     board=chess.Board(fen)
     x=encode_board(board).flatten()
     label.append((x,y))
+
+    if len(label)>=100:
+        break
+i=0
+tr=[]
+valdata=[]
+while i<100:
+    if i<80:
+
+        tr.append(label[i])
+    else:
+        valdata.append(label[i])
+    i+=1    
