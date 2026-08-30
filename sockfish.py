@@ -5,8 +5,8 @@ import chess
 import math
 data=load_dataset("Lichess/chess-position-evaluations",split="train",data_files={"train": "data/data_0000.parquet"})
 
-
-subset=data.select(range(200)) #gets one small slice
+n=5000
+subset=data.select(range(n)) #gets one small slice
 label=[]
 
 
@@ -59,9 +59,7 @@ for each in subset:
     x=encode_board(board).flatten()
     label.append((x,y))
 
-    if len(label)>=100:
-        break
+split=int(len(label)*0.8)
 
-tr=[]
-valdata=label[81:]
-tr=label[0:81]
+valdata=label[split:]
+tr=label[:split]

@@ -64,5 +64,11 @@ if __name__ == "__main__":
 
     print(f"win probability (white): {win_prob:.4f}")
     print(f"eval: {pawns:+.2f}")
+    if pawns > 0:
+        print(f"--> White is ahead by {abs(pawns):.2f}")
+    elif pawns < 0:
+        print(f"--> Black is ahead by {abs(pawns):.2f}")
+    else:
+        print("--> Dead equal")    
 
 
