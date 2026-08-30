@@ -1,5 +1,4 @@
 Chess Evaluation Neural Network
 
-A chess position evaluator built entirely from scratch — no PyTorch, no TensorFlow, no autograd. Just NumPy and the math, implemented by hand.
-
-Feed it a FEN string. Get back an evaluation score — the same idea as the eval bar on Lichess or Chess.com, except every gradient here was derived and coded manually.
+A chess position evaluator built entirely in NumPy no without pytorch or tensorflow. Just NumPy and the math, implemented by hand.
+it takes a fen string as an input and gives you back the evaluation of that position
