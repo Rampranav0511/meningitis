@@ -3,7 +3,8 @@ import chess
 
 
 import math
-data=load_dataset("Lichess/chess-evaluations",split="train")
+data=load_dataset("Lichess/chess-position-evaluations",split="train",data_files={"train": "data/data_0000.parquet"})
+
 
 subset=data.select(range(200)) #gets one small slice
 label=[]
@@ -45,13 +46,13 @@ def cp_win(cp):
     return 0.5 + 0.5*(2/(1 + math.exp(-0.00368208*cp))-1)
 for each in subset:
     fen=each["fen"]
-    pv = each["evals"][-1]["pvs"][0]
-    if "cp" in pv:
-        cp = pv["cp"]
-        y = cp_win(cp)
-    elif "mate" in pv:
-        mate = pv["mate"]
-        y = 1.0 if mate > 0 else 0.0   
+    cp=each["cp"]
+    mate=each["mate"]
+    if mate is not None:
+        y= 1.0 if mate>0 else 0.0
+    elif cp is not None:
+        
+        y = cp_win(cp)   
     else:
         continue
     board=chess.Board(fen)
@@ -60,13 +61,7 @@ for each in subset:
 
     if len(label)>=100:
         break
-i=0
-tr=[]
-valdata=[]
-while i<100:
-    if i<80:
 
-        tr.append(label[i])
-    else:
-        valdata.append(label[i])
-    i+=1    
+tr=[]
+valdata=label[81:]
+tr=label[0:81]
