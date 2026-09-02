@@ -1,8 +1,14 @@
 import numpy as np
 import chess
+<<<<<<< HEAD
 from chessfens import encod  # fens not needed here anymore
 
 loading = np.load("neural network.npz")
+=======
+from chessfens import fens,encod
+
+loading=np.load("neural network.npz")
+>>>>>>> e7cff94 (final testing)
 # here loading is a dict-like container
 """this thing basically stored all our weights matrices as values to a key , for eg :
 something like - "arr_0":first weights/first bias matrix,  depending on how we saved it earlier
@@ -18,6 +24,7 @@ key's corresponding entry inside the zip archive, decompress those bytes, and re
         so now, we need to sort this as numpy doesnt really guarantee a sorted list even though the entry was done in that manner
 its just a fallback check , so we split the key using the underscore as the delimiter(whatever u call ts) and sort checking the
 number after the underscore"""
+<<<<<<< HEAD
 hahakey = sorted(loading.files, key=lambda k: int(k.split('_')[1]))
 weights = []
 biases = []
@@ -29,12 +36,27 @@ for i in range(layers):
 
 K = 0.00368208  # missing before -- same constant as sockfish.py's cp_win
 
+=======
+hahakey=sorted(loading.files,key=lambda k: int(k.split('_')[1]))
+weights=[]
+biases=[]
+layers=len(hahakey)//2 # how many weights and bias matrices exist
+
+for i in range(layers):
+
+    weights.append([loading[hahakey[i]]])
+    biases.append([loading[hahakey[i+layers]]])
+>>>>>>> e7cff94 (final testing)
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
 def forward(x, weights, biases):
+<<<<<<< HEAD
+=======
+    
+>>>>>>> e7cff94 (final testing)
     act = x
     for i in range(layers):
         act = weights[i] @ act + biases[i]
@@ -43,6 +65,7 @@ def forward(x, weights, biases):
 
 
 def evaluate_fen(fen, weights, biases):
+<<<<<<< HEAD
     board = chess.Board(fen)
     planes = encod(board)
     x = planes.flatten().reshape(-1, 1)
@@ -70,5 +93,21 @@ if __name__ == "__main__":
         print(f"--> Black is ahead by {abs(pawns):.2f}")
     else:
         print("--> Dead equal")    
+=======
+    """
+    Takes a FEN string, encodes it the same way training data was encoded,
+    runs it through the network, and returns a win-probability score (0-1).
+    """
+    board = chess.Board(fen)
+    planes = encod(board)                  # (12, 8, 8)
+    x = planes.flatten().reshape(-1, 1)    # (768, 1) column vector
+    score = forward(x, weights, biases)
+    return score.item()
+
+for i in range(len(fens)):
+    score=evaluate_fen(fens[i],weights,biases)
+
+
+>>>>>>> e7cff94 (final testing)
 
 
