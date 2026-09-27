@@ -19,7 +19,7 @@ a(l) = sigmoid( W(l) . a(l-1) + b(l) )
 
 ## Where the training data comes from
 
-Labels come from the [Lichess position evaluations dataset](https://huggingface.co/datasets/Lichess/chess-position-evaluations) on Hugging Face — millions of real positions, each already scored by Stockfish. Positions get pulled, encoded into the 12-plane format, converted to win-probability targets, and split 80/20 into training and validation sets.
+Labels come from the [Lichess position evaluations dataset](https://huggingface.co/datasets/Lichess/chess-position-evaluations) on Hugging Face each already scored by Stockfish. Positions get pulled, encoded into the 12-plane format, converted to win-probability targets, and split 80/20 into training and validation sets.
 
 ## What's in the repo
 
